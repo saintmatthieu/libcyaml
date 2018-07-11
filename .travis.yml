@@ -2,9 +2,9 @@ language: c
 sudo: required
 matrix:
   include:
-    - compiler: gcc
+    - compiler: gcc-8
     - compiler: clang
-    - compiler: gcc
+    - compiler: gcc-8
       addons:
         apt:
           sources:
