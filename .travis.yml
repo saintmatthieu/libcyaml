@@ -2,13 +2,13 @@ language: c
 sudo: required
 matrix:
   include:
-    - compiler: gcc-7
+    - compiler: gcc-8
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - gcc-7
+            - gcc-8
     - compiler: clang
     - compiler: gcc
       addons:
