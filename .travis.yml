@@ -3,15 +3,21 @@ sudo: required
 matrix:
   include:
     - compiler: gcc-7
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-7
     - compiler: clang
-    - compiler: gcc-7
+    - compiler: gcc
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
           packages:
             - python-pip
-            - gcc-7
+            - gcc
       env:
         - BUILD_TYPE=Coverage
 before_install:
