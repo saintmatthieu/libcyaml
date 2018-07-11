@@ -2,16 +2,16 @@ language: c
 sudo: required
 matrix:
   include:
-    - compiler: gcc
+    - compiler: gcc-7
     - compiler: clang
-    - compiler: gcc
+    - compiler: gcc-7
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
           packages:
             - python-pip
-            - gcc-8
+            - gcc-7
       env:
         - BUILD_TYPE=Coverage
 before_install:
