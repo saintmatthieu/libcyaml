@@ -404,47 +404,6 @@ static cyaml_err_t cyaml__stack_pop(
 }
 
 /**
- * Helper to make allocations for saved YAML values.
- *
- * If the current state is sequence, this extends any existing allocation
- * for the sequence.
- *
- * The current CYAML saving context's state is updated with new allocation
- * address, where necessary.
- *
- * \param[in]      ctx            The CYAML saving context.
- * \param[in]      schema         The schema for value to get data pointer for.
- * \param[in,out]  value_data_io  Current address of value's data.  Updated to
- *                                new address if value is allocation requiring
- *                                an allocation.
- * \return \ref CYAML_OK on success, or appropriate error code otherwise.
- */
-static cyaml_err_t cyaml__data_handle_pointer(
-		const cyaml_ctx_t *ctx,
-		const cyaml_schema_value_t *schema,
-		const uint8_t **value_data_io)
-{
-	cyaml_err_t err = CYAML_OK;
-
-	if (schema->flags & CYAML_FLAG_POINTER) {
-		const uint8_t *data = *value_data_io;
-
-		data = (void *)cyaml_data_read(sizeof(char *), data, &err);
-		if (err != CYAML_OK) {
-			return err;
-		}
-
-		cyaml__log(ctx->config, CYAML_LOG_DEBUG,
-				"Handle pointer: %p --> %p\n",
-				*value_data_io, data);
-
-		*value_data_io = data;
-	}
-
-	return err;
-}
-
-/**
  * Dump a backtrace to the log.
  *
  * \param[in]  ctx     The CYAML saving context.
@@ -894,7 +853,7 @@ static cyaml_err_t cyaml__write_value(
 			cyaml__type_to_str(schema->type),
 			schema->flags & CYAML_FLAG_POINTER ? " (pointer)" : "");
 
-	err = cyaml__data_handle_pointer(ctx, schema, &data);
+	err = cyaml_data_save_handle_pointer(ctx->config, schema, &data);
 	if (err != CYAML_OK) {
 		return err;
 	}

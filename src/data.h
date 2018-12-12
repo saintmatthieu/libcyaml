@@ -14,6 +14,8 @@
 
 #include "cyaml/cyaml.h"
 
+#include "util.h"
+
 /**
  * Write a value of up to eight bytes to data_target.
  *
@@ -82,6 +84,43 @@ static inline uint64_t cyaml_data_read(
 
 	*error_out = CYAML_OK;
 	return ret;
+}
+
+/**
+ * Helper to handle pointer-type CYAML values.
+ *
+ * If the value is a pointer, this updates the passed address to the one
+ * given by the value data.
+ *
+ * \param[in]      config         Client's CYAML configuration structure.
+ * \param[in]      schema         The schema for value to get data pointer for.
+ * \param[in,out]  value_data_io  Current address of value's data.  Updated to
+ *                                new address if value is a pointer.
+ * \return \ref CYAML_OK on success, or appropriate error code otherwise.
+ */
+static inline cyaml_err_t cyaml_data_save_handle_pointer(
+		const cyaml_config_t *config,
+		const cyaml_schema_value_t *schema,
+		const uint8_t **value_data_io)
+{
+	cyaml_err_t err = CYAML_OK;
+
+	if (schema->flags & CYAML_FLAG_POINTER) {
+		const uint8_t *data = *value_data_io;
+
+		data = (void *)cyaml_data_read(sizeof(char *), data, &err);
+		if (err != CYAML_OK) {
+			return err;
+		}
+
+		cyaml__log(config, CYAML_LOG_DEBUG,
+				"Handle pointer (reading): %p --> %p\n",
+				*value_data_io, data);
+
+		*value_data_io = data;
+	}
+
+	return err;
 }
 
 #endif
