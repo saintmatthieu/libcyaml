@@ -5212,6 +5212,7 @@ static bool test_err_load_flag_value_alias(
 		ttest_report_ctx_t *report,
 		const cyaml_config_t *config)
 {
+	cyaml_config_t cfg = *config;
 	struct target_struct {
 		unsigned a;
 		unsigned b;
@@ -5244,14 +5245,16 @@ static bool test_err_load_flag_value_alias(
 	};
 	test_data_t td = {
 		.data = (cyaml_data_t **) &data_tgt,
-		.config = config,
+		.config = &cfg,
 		.schema = &top_schema,
 	};
 	cyaml_err_t err;
 
+	cfg.flags |= CYAML_CFG_NO_ALIAS;
+
 	ttest_ctx_t tc = ttest_start(report, __func__, cyaml_cleanup, &td);
 
-	err = cyaml_load_data(yaml, YAML_LEN(yaml), config, &top_schema,
+	err = cyaml_load_data(yaml, YAML_LEN(yaml), &cfg, &top_schema,
 			(cyaml_data_t **) &data_tgt, NULL);
 	if (err != CYAML_ERR_ALIAS) {
 		return ttest_fail(&tc, cyaml_strerror(err));
@@ -5271,6 +5274,7 @@ static bool test_err_load_mapping_value_alias(
 		ttest_report_ctx_t *report,
 		const cyaml_config_t *config)
 {
+	cyaml_config_t cfg = *config;
 	struct target_struct {
 		char *a;
 		char *b;
@@ -5300,14 +5304,16 @@ static bool test_err_load_mapping_value_alias(
 	};
 	test_data_t td = {
 		.data = (cyaml_data_t **) &data_tgt,
-		.config = config,
+		.config = &cfg,
 		.schema = &top_schema,
 	};
 	cyaml_err_t err;
 
+	cfg.flags |= CYAML_CFG_NO_ALIAS;
+
 	ttest_ctx_t tc = ttest_start(report, __func__, cyaml_cleanup, &td);
 
-	err = cyaml_load_data(yaml, YAML_LEN(yaml), config, &top_schema,
+	err = cyaml_load_data(yaml, YAML_LEN(yaml), &cfg, &top_schema,
 			(cyaml_data_t **) &data_tgt, NULL);
 	if (err != CYAML_ERR_ALIAS) {
 		return ttest_fail(&tc, cyaml_strerror(err));
