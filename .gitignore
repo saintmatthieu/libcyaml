@@ -1,1 +1,3 @@
 build/
+_deploy/lib/static/Debug/libcyaml.lib
+_deploy/include/cyaml/cyaml.h
