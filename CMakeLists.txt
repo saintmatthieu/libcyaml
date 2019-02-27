@@ -18,8 +18,12 @@ if(MSVC)
     set(CMAKE_C_FLAGS_RELEASE   "/MT /O2 /Ob2 /D NDEBUG")
 endif()
 
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 add_subdirectory(src)
 add_subdirectory(test)
+add_subdirectory(examples/numerical)
+add_subdirectory(examples/planner)
 
 install(
   TARGETS libcyaml DESTINATION ${DGK_LINKAGE_DIRNAME}/${DGK_CONFIG_DIRNAME}
